@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import { Position } from './position';
-import { MineFieldState } from './minesweeper';
+import { Position } from './game/Position';
+import { FieldState } from './game/FieldState';
 import { Field, FieldRangeIterator, Range } from './components/Field';
 import { Square, toSquarePosition } from './components/Square';
 import { CheckedBlock } from './components/CheckedBlock';
@@ -9,7 +9,7 @@ import { MouseControl } from './components/MouseControl';
 
 function Game() {
   const [offset, setOffset] = useState(new Position(0, 0));
-  const [fieldState, setFieldState] = useState(new MineFieldState());
+  const [fieldState, setFieldState] = useState(new FieldState());
   const [pushedSquares, setPushedSquares] = useState<string[]>([]);
   const handlePan = useCallback((p: Position) => {
     setOffset(p);
@@ -68,7 +68,7 @@ function Game() {
 
     if (fieldState.canChord(p)) {
       setPushedSquares(
-        MineFieldState.getAdjacentPositions(p)
+        FieldState.getAdjacentPositions(p)
           .filter(q => !fieldState.getBlock(q)?.flag)
           .map(q => q.key)
       );

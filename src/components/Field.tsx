@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { SQUARE_SIZE } from './Square';
-import { Position } from '../position';
+import { Position } from '../game/Position';
 import './Field.css';
 
 const RANGE_MARGIN = 0;

@@ -1,5 +1,5 @@
 import { MouseEvent, ReactNode, useCallback, useRef } from 'react';
-import { Position } from '../position';
+import { Position } from '../game/Position';
 import { PanCallback, usePan } from '../utils/usePan';
 import './MouseControl.css';
 
@@ -88,12 +88,12 @@ export function MouseControl({
     const pos = getMousePosition(e);
 
     if (!isPanning) {
+      if (!longClickTimer.current) {
+        onLongClick?.(pos);
+      }
+
       if (leftDown.current) {
-        if (longClickTimer.current) {
-          onClick?.(pos);
-        } else {
-          onLongClick?.(pos);
-        }
+        onClick?.(pos);
       } else if (rightDown.current) {
         onRightClick?.(pos);
       }

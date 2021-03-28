@@ -2,7 +2,7 @@ import { Meta, Story } from '@storybook/react';
 import { Block } from './Block';
 import { Square } from './Square';
 import { Field, FieldProps, FieldRangeIterator } from './Field';
-import { Position } from '../position';
+import { Position } from '../game/Position';
 
 export default {
   title: 'Components/Field',

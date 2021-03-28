@@ -1,5 +1,5 @@
 
-class Random {
+export class Random {
   private nextRandom?: Random;
 
   constructor(
@@ -23,5 +23,3 @@ class Random {
     return this.value < rate;
   }
 }
-
-export default Random;

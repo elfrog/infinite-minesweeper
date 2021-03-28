@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Position } from '../position';
+import { Position } from '../game/Position';
 import './Square.css';
 
 export const SQUARE_SIZE = 32;

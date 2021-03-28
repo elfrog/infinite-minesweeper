@@ -1,29 +1,23 @@
 import { Map } from 'immutable';
-import { Position } from './position';
-import Random from './random';
+import { BlockState } from './BlockState';
+import { Position } from './Position';
+import { Random } from './Random';
+import { Stats } from './Stats';
 
 const MINE_RATE = 0.15;
 const ITEM_BOX_RATE = 0.05;
 const ADJACENTS: Position[] = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]
   .map(([x, y]) => new Position(x, y));
 
-export interface MineBlock {
-  position: Position;
-  count: number;
-  checked: boolean;
-  flag: boolean;
-  mine: boolean;
-  itemBox: boolean;
-}
-
-export class MineFieldState {
+export class FieldState {
   constructor(
     private random = new Random(1),
-    private field = Map<string, MineBlock>(),
+    private field = Map<string, BlockState>(),
+    public stats = new Stats(),
   ) {
   }
 
-  checkBlock(p: Position, depth = 0): MineFieldState {
+  checkBlock(p: Position, depth = 0): FieldState {
     const block = this.getBlock(p);
 
     if (block?.checked || block?.flag) {
@@ -72,7 +66,7 @@ export class MineFieldState {
     );
   }
 
-  private setBlock(p: Position, block: Partial<MineBlock> = {}) {
+  private setBlock(p: Position, block: Partial<BlockState> = {}) {
     const oldBlock = this.getBlock(p);
     const newBlock = {
       position: p,
@@ -84,21 +78,22 @@ export class MineFieldState {
       ...oldBlock,
       ...block,
     };
+    const newStats = this.stats.sum(newBlock, oldBlock);
     const nextField = this.field.set(p.key, newBlock);
 
-    return new MineFieldState(this.random.next.next, nextField);
+    return new FieldState(this.random.next.next, nextField, newStats);
   }
 
-  private determineAdjacents(p: Position): MineFieldState {
+  private determineAdjacents(p: Position): FieldState {
     return this.mapAdjacents(p, (nextState, q) => nextState.setBlock(q));
   }
 
-  private mapAdjacents(p: Position, mapCallback: (nextState: MineFieldState, q: Position) => MineFieldState) {
-    return MineFieldState.getAdjacentPositions(p).reduce(mapCallback, this as MineFieldState);
+  private mapAdjacents(p: Position, mapCallback: (nextState: FieldState, q: Position) => FieldState) {
+    return FieldState.getAdjacentPositions(p).reduce(mapCallback, this as FieldState);
   }
 
-  private tryCountAdjacents(p: Position, counter: (block?: MineBlock) => unknown) {
-    return MineFieldState.getAdjacentPositions(p).map(q => this.getBlock(q)).filter(counter).length;
+  private tryCountAdjacents(p: Position, counter: (block?: BlockState) => unknown) {
+    return FieldState.getAdjacentPositions(p).map(q => this.getBlock(q)).filter(counter).length;
   }
 
   static getAdjacentPositions(p: Position) {
