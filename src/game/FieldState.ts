@@ -1,17 +1,15 @@
 import { Map } from 'immutable';
 import { BlockState } from './BlockState';
 import { Position } from './Position';
-import { Random } from './Random';
+import { BlockRandomState } from './BlockRandomState';
 import { Stats } from './Stats';
 
-const MINE_RATE = 0.15;
-const ITEM_BOX_RATE = 0.05;
 const ADJACENTS: Position[] = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]
   .map(([x, y]) => new Position(x, y));
 
 export class FieldState {
   constructor(
-    private random = new Random(1),
+    private random = new BlockRandomState(),
     private field = Map<string, BlockState>(),
     public stats = new Stats(),
   ) {
@@ -73,15 +71,14 @@ export class FieldState {
       count: 0,
       checked: false,
       flag: false,
-      mine: this.random.bool(MINE_RATE),
-      itemBox: this.random.next.bool(ITEM_BOX_RATE),
+      ...this.random.value,
       ...oldBlock,
       ...block,
     };
     const newStats = this.stats.sum(newBlock, oldBlock);
     const nextField = this.field.set(p.key, newBlock);
 
-    return new FieldState(this.random.next.next, nextField, newStats);
+    return new FieldState(this.random.next, nextField, newStats);
   }
 
   private determineAdjacents(p: Position): FieldState {
