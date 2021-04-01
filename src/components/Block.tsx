@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import './Block.css';
 
 export interface BlockProps {
@@ -8,7 +9,7 @@ export interface BlockProps {
 
 export function Block({ flag, itemBox, pushed }: BlockProps) {
   return (
-    <div className={['block', pushed ? 'block--pushed' : ''].join(' ')}>
+    <div className={cn('block', pushed && 'block--pushed')}>
       {flag ? '🚩' : (itemBox ? '⏰' : '')}
     </div>
   );

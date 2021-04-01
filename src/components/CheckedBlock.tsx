@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import './CheckedBlock.css';
 
 export interface CheckedBlockProps {
@@ -8,11 +9,11 @@ export interface CheckedBlockProps {
 export function CheckedBlock({ count, mine }: CheckedBlockProps) {
   return (
     <div
-      className={[
+      className={cn(
         'checked-block',
         'checked-block--count-' + count,
-        mine ? 'checke-block--mine' : '',
-      ].join(' ')}
+        mine && 'checke-block--mine'
+      )}
     >
       {mine ? '💣' : (count || '')}
     </div>

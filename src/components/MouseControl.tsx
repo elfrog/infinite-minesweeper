@@ -1,4 +1,5 @@
 import { MouseEvent, ReactNode, useCallback, useRef } from 'react';
+import cn from 'classnames';
 import { Position } from '../game/Position';
 import { PanCallback, usePan } from '../utils/usePan';
 import './MouseControl.css';
@@ -115,10 +116,10 @@ export function MouseControl({
   return (
     <div
       ref={containerRef}
-      className={[
+      className={cn(
         'mouse-control',
-        isPanning ? 'mouse-control--panning' : ''
-      ].join(' ')}
+        isPanning && 'mouse-control--panning'
+      )}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onContextMenu={handleContextMenu}
