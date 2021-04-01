@@ -1,4 +1,3 @@
-
 export type PositionTuple = [number, number];
 
 export class Position {

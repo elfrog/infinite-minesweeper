@@ -6,7 +6,7 @@ export default {
   component: Square,
 } as Meta;
 
-export const Default: Story<SquareProps> = args => <Square {...args} />;
+export const Default: Story<SquareProps> = (args) => <Square {...args} />;
 
 Default.args = {
   x: 0,

@@ -1,4 +1,3 @@
-
 export type RandomStateGenerator<T> = {
   [Property in keyof T]: (v: number, c: number) => T[Property];
 };
@@ -6,7 +5,7 @@ export type RandomStateGenerator<T> = {
 export class RandomState<T> {
   public value: T;
   private nextSeed: number;
-  private _next?: RandomState<T>;
+  private savedNext?: RandomState<T>;
 
   constructor(
     private randomObject: RandomStateGenerator<T>,
@@ -16,23 +15,24 @@ export class RandomState<T> {
     const v: Partial<T> = {};
     let nextSeed = seed;
 
-    for (const key in this.randomObject) {
-      const value = (nextSeed % 1000 / 1000);
-      v[key] = this.randomObject[key](value, this.depth);
-      nextSeed = this.seed * 16807 % 2147483647;
-    }
+    Object.keys(this.randomObject).forEach((key) => {
+      const objectKey = key as keyof T;
+      const value = (nextSeed % 1000) / 1000;
+      v[objectKey] = this.randomObject[objectKey](value, this.depth);
+      nextSeed = (this.seed * 16807) % 2147483647;
+    });
 
     this.value = v as T;
     this.nextSeed = nextSeed;
   }
 
   get next() {
-    if (!this._next) {
+    if (!this.savedNext) {
       const nextState = new RandomState(this.randomObject, this.nextSeed, this.depth + 1);
-      this._next = nextState;
+      this.savedNext = nextState;
       return nextState;
     }
 
-    return this._next;
+    return this.savedNext;
   }
 }

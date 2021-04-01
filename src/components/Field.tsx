@@ -1,4 +1,6 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  ReactNode, useEffect, useRef, useState,
+} from 'react';
 import { SQUARE_SIZE } from './Square';
 import { Position } from '../game/Position';
 import './Field.css';
@@ -10,7 +12,7 @@ export interface Range {
   yStart: number;
   xEnd: number;
   yEnd: number;
-};
+}
 
 export type FieldRangeCallback = (r: Range) => ReactNode;
 
@@ -19,7 +21,7 @@ export interface FieldProps {
   children: FieldRangeCallback;
 }
 
-export function *FieldRangeIterator(r: Range) {
+export function* FieldRangeIterator(r: Range) {
   for (let y = r.yStart; y <= r.yEnd; y++) {
     for (let x = r.xStart; x <= r.xEnd; x++) {
       yield new Position(x, y);
@@ -29,7 +31,12 @@ export function *FieldRangeIterator(r: Range) {
 
 export function Field({ offset, children }: FieldProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const range = useRef<Range>({ xStart: 0, yStart: 0, xEnd: 0, yEnd: 0 });
+  const range = useRef<Range>({
+    xStart: 0,
+    yStart: 0,
+    xEnd: 0,
+    yEnd: 0,
+  });
   const [content, setContent] = useState<ReactNode>(null);
   const [contentStyle, setContentStyle] = useState({ left: '0px', top: '0px' });
 
@@ -44,8 +51,16 @@ export function Field({ offset, children }: FieldProps) {
       const yEnd = yStart + Math.ceil(rect.height / SQUARE_SIZE) + RANGE_MARGIN;
       const oldRange = range.current;
 
-      if (oldRange.xStart !== xStart || oldRange.yStart !== yStart || oldRange.xEnd !== xEnd || oldRange.yEnd !== yEnd) {
-        range.current = { xStart, yStart, xEnd, yEnd };
+      if (
+        (oldRange.xStart !== xStart || oldRange.yStart !== yStart)
+        || (oldRange.xEnd !== xEnd || oldRange.yEnd !== yEnd)
+      ) {
+        range.current = {
+          xStart,
+          yStart,
+          xEnd,
+          yEnd,
+        };
         setContent(children?.(range.current));
       }
 

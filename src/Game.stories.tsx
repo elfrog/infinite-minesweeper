@@ -6,4 +6,4 @@ export default {
   component: Game,
 } as Meta;
 
-export const Default: Story = args => <Game />;
+export const Default: Story = () => <Game />;

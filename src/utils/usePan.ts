@@ -1,4 +1,6 @@
-import { RefObject, useEffect, useRef, useState } from 'react';
+import {
+  RefObject, useEffect, useRef, useState,
+} from 'react';
 
 export type PanCallback = (dx: number, dy: number) => void;
 
@@ -10,11 +12,6 @@ export function usePan(callback: PanCallback) {
     const element = ref.current;
 
     let panStart = false;
-
-    function handleMouseDown() {
-      window.addEventListener('mousemove', handleMouseMove, false);
-      window.addEventListener('mouseup', handleMouseUp, false);
-    }
 
     function handleMouseMove(e: MouseEvent) {
       e.preventDefault();
@@ -39,6 +36,11 @@ export function usePan(callback: PanCallback) {
       window.removeEventListener('mouseup', handleMouseUp, false);
       setIsPanning(false);
       panStart = false;
+    }
+
+    function handleMouseDown() {
+      window.addEventListener('mousemove', handleMouseMove, false);
+      window.addEventListener('mouseup', handleMouseUp, false);
     }
 
     element?.addEventListener('mousedown', handleMouseDown, false);

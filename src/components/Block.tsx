@@ -8,9 +8,17 @@ export interface BlockProps {
 }
 
 export function Block({ flag, itemBox, pushed }: BlockProps) {
+  let content = '';
+
+  if (flag) {
+    content = '🚩';
+  } else if (itemBox) {
+    content = '⏰';
+  }
+
   return (
     <div className={cn('block', pushed && 'block--pushed')}>
-      {flag ? '🚩' : (itemBox ? '⏰' : '')}
+      {content}
     </div>
   );
 }

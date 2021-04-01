@@ -7,7 +7,7 @@ export default {
   component: CheckedBlock,
 } as Meta;
 
-export const Default: Story<CheckedBlockProps> = args => (
+export const Default: Story<CheckedBlockProps> = (args) => (
   <Square x={0} y={0}>
     <CheckedBlock {...args} />
   </Square>
@@ -22,5 +22,5 @@ export const Mine = Default.bind({});
 
 Mine.args = {
   count: 0,
-  mine: true
+  mine: true,
 };

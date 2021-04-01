@@ -14,7 +14,7 @@ export interface SquareProps {
   children?: ReactNode;
 }
 
-export function Square({x, y, children}: SquareProps) {
+export function Square({ x, y, children }: SquareProps) {
   const style = {
     top: `${SQUARE_SIZE * y}px`,
     left: `${SQUARE_SIZE * x}px`,

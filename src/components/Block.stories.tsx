@@ -7,14 +7,14 @@ export default {
   component: Block,
 } as Meta;
 
-export const Default: Story<BlockProps> = args => (
+export const Default: Story<BlockProps> = (args) => (
   <Square x={0} y={0}>
     <Block {...args} />
   </Square>
 );
 
 Default.args = {
-  itemBox: false
+  itemBox: false,
 };
 
 export const Pushed = Default.bind({});

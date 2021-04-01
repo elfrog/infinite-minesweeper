@@ -9,19 +9,17 @@ export default {
   component: Field,
 } as Meta;
 
-export const Default: Story<FieldProps> = args => {
-  return (
-    <Field {...args}>
-      {range => (
-        Array.from(FieldRangeIterator(range)).map(({ x, y, key }) => (
-          <Square key={key} x={x} y={y}>
-            <Block />
-          </Square>
-        ))
-      )}
-    </Field>
-  );
-};
+export const Default: Story<FieldProps> = (args) => (
+  <Field {...args}>
+    {(range) => (
+      Array.from(FieldRangeIterator(range)).map(({ x, y, key }) => (
+        <Square key={key} x={x} y={y}>
+          <Block />
+        </Square>
+      ))
+    )}
+  </Field>
+);
 
 Default.args = {
   offset: new Position(0, 0),

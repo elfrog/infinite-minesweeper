@@ -23,7 +23,7 @@ export class FieldState {
     }
 
     const determinedState = this.determineAdjacents(p);
-    const count = determinedState.tryCountAdjacents(p, adjacent=> adjacent?.mine);
+    const count = determinedState.tryCountAdjacents(p, (adjacent) => adjacent?.mine);
     const newState = determinedState.setBlock(p, { checked: true, count });
     const newBlock = newState.getBlock(p);
 
@@ -32,7 +32,7 @@ export class FieldState {
     }
 
     return newState.mapAdjacents(p, (nextState, q) => nextState.checkBlock(q, depth + 1));
-  } 
+  }
 
   getBlock({ key }: Position) {
     return this.field.get(key);
@@ -60,7 +60,7 @@ export class FieldState {
     const block = this.getBlock(p);
     return block && block.checked && !block.mine && block.count === this.tryCountAdjacents(
       p,
-      adjacent => adjacent && (adjacent.flag || (adjacent.checked && adjacent.mine)),
+      (adjacent) => adjacent && (adjacent.flag || (adjacent.checked && adjacent.mine)),
     );
   }
 
@@ -85,15 +85,18 @@ export class FieldState {
     return this.mapAdjacents(p, (nextState, q) => nextState.setBlock(q));
   }
 
-  private mapAdjacents(p: Position, mapCallback: (nextState: FieldState, q: Position) => FieldState) {
+  private mapAdjacents(
+    p: Position,
+    mapCallback: (nextState: FieldState, q: Position) => FieldState,
+  ) {
     return FieldState.getAdjacentPositions(p).reduce(mapCallback, this as FieldState);
   }
 
   private tryCountAdjacents(p: Position, counter: (block?: BlockState) => unknown) {
-    return FieldState.getAdjacentPositions(p).map(q => this.getBlock(q)).filter(counter).length;
+    return FieldState.getAdjacentPositions(p).map((q) => this.getBlock(q)).filter(counter).length;
   }
 
   static getAdjacentPositions(p: Position) {
-    return ADJACENTS.map(q => p.add(q));
+    return ADJACENTS.map((q) => p.add(q));
   }
 }

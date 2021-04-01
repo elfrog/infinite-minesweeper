@@ -11,8 +11,8 @@ export function CheckedBlock({ count, mine }: CheckedBlockProps) {
     <div
       className={cn(
         'checked-block',
-        'checked-block--count-' + count,
-        mine && 'checke-block--mine'
+        `checked-block--count-${count}`,
+        mine && 'checke-block--mine',
       )}
     >
       {mine ? '💣' : (count || '')}
