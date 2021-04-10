@@ -1,17 +1,22 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Position } from './game/Position';
 import { FieldState } from './game/FieldState';
+import { BlockState } from './game/BlockState';
 import { Field, FieldRangeIterator, Range } from './components/Field';
 import { Square, toSquarePosition } from './components/Square';
 import { CheckedBlock } from './components/CheckedBlock';
 import { Block } from './components/Block';
 import { MouseControl } from './components/MouseControl';
 import { Scoreboard } from './components/Scoreboard';
+import { useTimer } from './utils/useTimer';
+
+const MAX_GAME_SECONDS = 60;
 
 function Game() {
   const [offset, setOffset] = useState(new Position(0, 0));
   const [fieldState, setFieldState] = useState(new FieldState());
   const [pushedSquares, setPushedSquares] = useState<string[]>([]);
+  const [seconds, timer] = useTimer(MAX_GAME_SECONDS);
   const handlePan = useCallback((p: Position) => {
     setOffset(p);
   }, []);
@@ -39,9 +44,39 @@ function Game() {
     })
   ), [fieldState, pushedSquares]);
 
+  useEffect(() => {
+    if (fieldState.stats.checked + fieldState.stats.flags > 0) {
+      timer.start();
+    }
+  }, [timer, fieldState.stats.checked, fieldState.stats.flags]);
+
+  function applyBlockEffects(checkedBlocks: BlockState[]) {
+    checkedBlocks.forEach(({ mine, position }) => {
+      const oldBlock = fieldState.getBlock(position);
+
+      if (mine) {
+        timer.increase(-5);
+      } else if (oldBlock?.itemBox) {
+        timer.increase(5);
+      }
+    });
+  }
+
+  function checkBlock(p: Position) {
+    const [newState, ...checkedBlocks] = fieldState.checkBlock(p);
+    applyBlockEffects(checkedBlocks);
+    setFieldState(newState);
+  }
+
+  function chordBlock(p: Position) {
+    const [newState, ...checkedBlocks] = fieldState.chordBlock(p);
+    applyBlockEffects(checkedBlocks);
+    setFieldState(newState);
+  }
+
   function handleDualClick(mousePosition: Position) {
     const p = toSquarePosition(mousePosition);
-    setFieldState(fieldState.chordBlock(p));
+    chordBlock(p);
   }
 
   function handleClick(mousePosition: Position) {
@@ -49,9 +84,9 @@ function Game() {
     const block = fieldState.getBlock(p);
 
     if (block?.checked) {
-      setFieldState(fieldState.chordBlock(p));
+      chordBlock(p);
     } else {
-      setFieldState(fieldState.checkBlock(p));
+      checkBlock(p);
     }
   }
 
@@ -60,7 +95,7 @@ function Game() {
     const block = fieldState.getBlock(p);
 
     if (block?.checked) {
-      setFieldState(fieldState.chordBlock(p));
+      chordBlock(p);
     }
   }
 
@@ -69,7 +104,7 @@ function Game() {
     const block = fieldState.getBlock(p);
 
     if (!block?.checked) {
-      setFieldState(fieldState.toggleFlag(p));
+      setFieldState(fieldState.toggleFlag(p)[0]);
     }
   }
 
@@ -107,7 +142,11 @@ function Game() {
           {renderSquares}
         </Field>
       </MouseControl>
-      <Scoreboard time={0} checked={fieldState.stats.checked} flags={fieldState.stats.flags} />
+      <Scoreboard
+        time={seconds / MAX_GAME_SECONDS}
+        checked={fieldState.stats.checked}
+        flags={fieldState.stats.flags}
+      />
     </div>
   );
 }
