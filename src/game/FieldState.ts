@@ -7,53 +7,59 @@ import { Stats } from './Stats';
 const ADJACENTS: Position[] = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]
   .map(([x, y]) => new Position(x, y));
 
+export type FieldStateSetResult = [FieldState, ...BlockState[]];
+
 export class FieldState {
   constructor(
     private random = new BlockRandomState(),
     private field = Map<string, BlockState>(),
-    public stats = new Stats(),
+    public readonly stats = new Stats(),
   ) {
   }
 
-  checkBlock(p: Position, depth = 0): FieldState {
+  checkBlock(p: Position, depth = 0): FieldStateSetResult {
     const block = this.getBlock(p);
 
     if (block?.checked || block?.flag) {
-      return this;
+      return [this];
     }
 
     const determinedState = this.determineAdjacents(p);
     const count = determinedState.tryCountAdjacents(p, (adjacent) => adjacent?.mine);
-    const newState = determinedState.setBlock(p, { checked: true, count });
-    const newBlock = newState.getBlock(p);
+    const [checkedState, checkedBlock] = determinedState.setBlock(p, { checked: true, count });
 
-    if (count > 0 || newBlock?.mine) {
-      return newState;
+    if (count > 0 || checkedBlock?.mine) {
+      return [checkedState, checkedBlock];
     }
 
-    return newState.mapAdjacents(p, (nextState, q) => nextState.checkBlock(q, depth + 1));
+    const [adjacentState, ...adjacentBlocks] = checkedState.mapAdjacents(
+      p,
+      (nextState, q) => nextState.checkBlock(q, depth + 1),
+    );
+
+    return [adjacentState, checkedBlock, ...adjacentBlocks];
   }
 
   getBlock({ key }: Position) {
     return this.field.get(key);
   }
 
-  toggleFlag(p: Position) {
+  toggleFlag(p: Position): FieldStateSetResult {
     const block = this.getBlock(p);
 
     if (block?.checked) {
-      return this;
+      return [this];
     }
 
     return this.setBlock(p, { flag: !block?.flag });
   }
 
-  chordBlock(p: Position) {
+  chordBlock(p: Position): FieldStateSetResult {
     if (this.canChord(p)) {
       return this.mapAdjacents(p, (nextState, q) => nextState.checkBlock(q));
     }
 
-    return this;
+    return [this];
   }
 
   canChord(p: Position) {
@@ -64,7 +70,7 @@ export class FieldState {
     );
   }
 
-  private setBlock(p: Position, block: Partial<BlockState> = {}) {
+  private setBlock(p: Position, block?: Partial<BlockState>) {
     const oldBlock = this.getBlock(p);
     const newBlock = {
       position: p,
@@ -78,18 +84,23 @@ export class FieldState {
     const newStats = this.stats.sum(newBlock, oldBlock);
     const nextField = this.field.set(p.key, newBlock);
 
-    return new FieldState(this.random.next, nextField, newStats);
+    return [new FieldState(this.random.next, nextField, newStats), newBlock] as FieldStateSetResult;
   }
 
   private determineAdjacents(p: Position): FieldState {
-    return this.mapAdjacents(p, (nextState, q) => nextState.setBlock(q));
+    return this.mapAdjacents(p, (nextState, q) => nextState.setBlock(q))[0];
   }
 
   private mapAdjacents(
     p: Position,
-    mapCallback: (nextState: FieldState, q: Position) => FieldState,
+    mapCallback: (nextState: FieldState, q: Position) => FieldStateSetResult,
   ) {
-    return FieldState.getAdjacentPositions(p).reduce(mapCallback, this as FieldState);
+    return FieldState
+      .getAdjacentPositions(p)
+      .reduce(([prevState, ...prevBlocks], q) => {
+        const [nextState, ...newBlocks] = mapCallback(prevState, q);
+        return [nextState, ...prevBlocks, ...newBlocks] as FieldStateSetResult;
+      }, [this] as FieldStateSetResult);
   }
 
   private tryCountAdjacents(p: Position, counter: (block?: BlockState) => unknown) {
