@@ -8,6 +8,7 @@ import { CheckedBlock } from './components/CheckedBlock';
 import { Block } from './components/Block';
 import { MouseControl } from './components/MouseControl';
 import { Scoreboard } from './components/Scoreboard';
+import { StartBanner } from './components/StartBanner';
 import { useTimer } from './utils/useTimer';
 
 const MAX_GAME_SECONDS = 60;
@@ -16,6 +17,7 @@ function Game() {
   const [offset, setOffset] = useState(new Position(0, 0));
   const [fieldState, setFieldState] = useState(new FieldState());
   const [pushedSquares, setPushedSquares] = useState<string[]>([]);
+  const [isStarted, setIsStarted] = useState(false);
   const [seconds, timer] = useTimer(MAX_GAME_SECONDS);
   const handlePan = useCallback((p: Position) => {
     setOffset(p);
@@ -46,9 +48,12 @@ function Game() {
 
   useEffect(() => {
     if (fieldState.stats.checked + fieldState.stats.flags > 0) {
-      timer.start();
+      if (!isStarted) {
+        setIsStarted(true);
+        timer.start();
+      }
     }
-  }, [timer, fieldState.stats.checked, fieldState.stats.flags]);
+  }, [timer, fieldState.stats.checked, fieldState.stats.flags, isStarted]);
 
   function applyBlockEffects(checkedBlocks: BlockState[]) {
     checkedBlocks.forEach(({ mine, position }) => {
@@ -142,11 +147,17 @@ function Game() {
           {renderSquares}
         </Field>
       </MouseControl>
-      <Scoreboard
-        time={seconds / MAX_GAME_SECONDS}
-        checked={fieldState.stats.checked}
-        flags={fieldState.stats.flags}
-      />
+
+      {isStarted && (
+        <>
+          <Scoreboard
+            time={seconds / MAX_GAME_SECONDS}
+            checked={fieldState.stats.checked}
+            flags={fieldState.stats.flags}
+          />
+          <StartBanner />
+        </>
+      )}
     </div>
   );
 }

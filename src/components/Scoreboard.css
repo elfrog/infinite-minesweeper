@@ -1,4 +1,14 @@
 
+@keyframes scoreboardShow {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes blink {
   0% { opacity: 1; }
   50% { opacity: 0; }
@@ -13,6 +23,7 @@
   text-align: left;
   pointer-events: none;
   text-align: center;
+  animation: scoreboardShow 500ms;
 }
 
 .scoreboard__panel {
