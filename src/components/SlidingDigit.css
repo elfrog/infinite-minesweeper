@@ -1,0 +1,50 @@
+
+@keyframes fadeOutUp {
+  from {
+    transform: scaleY(1);
+    transform-origin: top center;
+    opacity: 1;
+  }
+
+  to {
+    transform: scaleY(0);
+    transform-origin: top center;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: scaleY(0);
+    transform-origin: bottom center;
+    opacity: 0;
+  }
+
+  to {
+    transform: scaleY(1);
+    transform-origin: bottom center;
+    opacity: 1;
+  }
+}
+
+.sliding-digit {
+  position: relative;
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+}
+
+.sliding-digit span {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 1em;
+}
+
+.sliding-digit__current {
+  animation: 250ms fadeInUp both;
+}
+
+.sliding-digit__prev {
+  animation: 250ms fadeOutUp both;
+}

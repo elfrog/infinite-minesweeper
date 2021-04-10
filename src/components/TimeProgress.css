@@ -1,0 +1,29 @@
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.time-progress {
+  position: relative;
+  width: 100%;
+  border-radius: 1em;
+  border: 2px solid white;
+  overflow: hidden;
+}
+
+.time-progress__bar {
+  position: relative;
+  height: 0.5em;
+  background-color: #6495ed;
+}
+
+.time-progress--warning .time-progress__bar {
+  background-color: gold;
+}
+
+.time-progress--hurry .time-progress__bar {
+  background-color: red;
+  animation: blink 500ms infinite;
+}
