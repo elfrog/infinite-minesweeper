@@ -6,7 +6,12 @@ export class Stats {
     public checked = 0,
     public flags = 0,
     public correctFlags = 0,
+    public clicks = 0,
   ) {
+  }
+
+  set(stats: Partial<Stats>) {
+    return Object.assign(new Stats(), this, stats);
   }
 
   sum(newBlock: BlockState, oldBlock?: BlockState): Stats {
@@ -18,6 +23,7 @@ export class Stats {
         newBlock.flag && newBlock.mine,
         oldBlock?.flag && oldBlock?.mine,
       ) + this.correctFlags,
+      this.clicks,
     );
   }
 

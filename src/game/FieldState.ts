@@ -24,7 +24,8 @@ export class FieldState {
       return [this];
     }
 
-    const determinedState = this.determineAdjacents(p);
+    const currentState = depth === 0 ? this.click() : this;
+    const determinedState = currentState.determineAdjacents(p);
     const count = determinedState.tryCountAdjacents(p, (adjacent) => adjacent?.mine);
     const [checkedState, checkedBlock] = determinedState.setBlock(p, { checked: true, count });
 
@@ -51,12 +52,12 @@ export class FieldState {
       return [this];
     }
 
-    return this.setBlock(p, { flag: !block?.flag });
+    return this.click().setBlock(p, { flag: !block?.flag });
   }
 
   chordBlock(p: Position): FieldStateSetResult {
     if (this.canChord(p)) {
-      return this.mapAdjacents(p, (nextState, q) => nextState.checkBlock(q));
+      return this.click().mapAdjacents(p, (nextState, q) => nextState.checkBlock(q, 1));
     }
 
     return [this];
@@ -67,6 +68,14 @@ export class FieldState {
     return block && block.checked && !block.mine && block.count === this.tryCountAdjacents(
       p,
       (adjacent) => adjacent && (adjacent.flag || (adjacent.checked && adjacent.mine)),
+    );
+  }
+
+  private click() {
+    return new FieldState(
+      this.random,
+      this.field,
+      this.stats.set({ clicks: this.stats.clicks + 1 }),
     );
   }
 
