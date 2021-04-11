@@ -18,7 +18,7 @@ export type FieldRangeCallback = (r: Range) => ReactNode;
 
 export interface FieldProps {
   offset: Position;
-  children: FieldRangeCallback;
+  children?: FieldRangeCallback;
 }
 
 export function* FieldRangeIterator(r: Range) {
