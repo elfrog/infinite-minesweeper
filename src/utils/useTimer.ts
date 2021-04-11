@@ -6,6 +6,7 @@ interface Timer {
   increase(s: number): void;
   start(): void;
   stop(): void;
+  reset(): void;
 }
 
 export function useTimer(max: number) {
@@ -33,6 +34,14 @@ export function useTimer(max: number) {
       }
     },
     stop() {
+      if (timerHandle.current) {
+        window.clearInterval(timerHandle.current);
+        timerHandle.current = 0;
+      }
+    },
+    reset() {
+      setSeconds(max);
+
       if (timerHandle.current) {
         window.clearInterval(timerHandle.current);
         timerHandle.current = 0;
