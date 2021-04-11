@@ -1,27 +1,11 @@
-import { SlidingDigit } from './SlidingDigit';
 import { TimeProgress } from './TimeProgress';
+import { Score } from './Score';
 import './Scoreboard.css';
 
 export interface ScoreboardProps {
   time: number;
   checked: number;
   flags: number;
-}
-
-function Score({ value }: { value: number }) {
-  const digits = Array.from(String(value)).map(Number);
-
-  return (
-    <span>
-      {digits.map((digit, i) => (
-        <SlidingDigit
-          key={`digit-${digits.length - i - 1}`}
-          value={digit}
-          position={digits.length - i - 1}
-        />
-      ))}
-    </span>
-  );
 }
 
 export function Scoreboard({ time, checked, flags }: ScoreboardProps) {

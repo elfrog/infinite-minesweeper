@@ -4,11 +4,12 @@ import './SlidingDigit.css';
 export interface SlidingDigitProps {
   value: number;
   position: number;
+  startValue?: number;
 }
 
-export function SlidingDigit({ value = 0, position = 0 }: SlidingDigitProps) {
+export function SlidingDigit({ value = 0, position = 0, startValue }: SlidingDigitProps) {
   const currentValue = Math.abs(value) % 10;
-  const prev = useRef(currentValue);
+  const prev = useRef(startValue ?? currentValue);
   const prevValue = prev.current;
   const style = {
     animationDelay: `${position * 100}ms`,
