@@ -1,0 +1,80 @@
+
+@keyframes gameOverAnimation {
+  0% { transform: scale(0); transform-origin: center; }
+  50% { transform: scale(1.25); transform-origin: center; }
+  80% { transform: scale(0.75); transform-origin: center; }
+  100% { transform: scale(1); transform-origin: center; }
+}
+
+@keyframes gameResultTableAnimation {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes retryButtonAnimation {
+  0% { color: white; }
+  50% { color: #add8e6; }
+  100% { color: white; }
+}
+
+.game-result {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+.game-result__panel {
+  min-width: 20em;
+  text-align: center;
+}
+
+.game-result__panel h1 {
+  display: block;
+  animation: gameOverAnimation 500ms;
+}
+
+.game-result__panel table {
+  width: 100%;
+  animation: gameResultTableAnimation 500ms;
+}
+
+.game-result__panel th {
+  width: 50%;
+  padding: 0.25em;
+  text-align: right;
+  font-weight: normal;
+  line-height: 1em;
+}
+
+.game-result__panel td {
+  padding: 0.25em;
+  text-align: left;
+  font-weight: bold;
+}
+
+.game-result__panel span {
+  color: yellow;
+}
+
+.game-result__retry {
+  margin: 1em;
+  padding: 0.25em;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background-color: transparent;
+  color: white;
+  cursor: pointer;
+  animation: retryButtonAnimation 2000ms infinite;
+}
+
+.game-result__retry:hover {
+  border-bottom: 2px solid white;
+  transition: border 300ms ease-out;
+}

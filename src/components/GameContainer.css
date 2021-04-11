@@ -1,0 +1,13 @@
+
+.game-container, .game-container__field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.game-container--paused .game-container__field {
+  filter: blur(3px);
+  transition: filter 500ms;
+}

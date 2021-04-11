@@ -9,15 +9,19 @@ import { Block } from './components/Block';
 import { MouseControl } from './components/MouseControl';
 import { Scoreboard } from './components/Scoreboard';
 import { StartBanner } from './components/StartBanner';
+import { GameResult } from './components/GameResult';
+import { GameContainer } from './components/GameContainer';
 import { useTimer } from './utils/useTimer';
 
 const MAX_GAME_SECONDS = 60;
+
+type GameStatus = 'ready' | 'playing' | 'gameover';
 
 function Game() {
   const [offset, setOffset] = useState(new Position(0, 0));
   const [fieldState, setFieldState] = useState(new FieldState());
   const [pushedSquares, setPushedSquares] = useState<string[]>([]);
-  const [isStarted, setIsStarted] = useState(false);
+  const [status, setStatus] = useState<GameStatus>('ready');
   const [seconds, timer] = useTimer(MAX_GAME_SECONDS);
   const handlePan = useCallback((p: Position) => {
     setOffset(p);
@@ -47,13 +51,17 @@ function Game() {
   ), [fieldState, pushedSquares]);
 
   useEffect(() => {
-    if (fieldState.stats.checked + fieldState.stats.flags > 0) {
-      if (!isStarted) {
-        setIsStarted(true);
-        timer.start();
-      }
+    if (seconds === 0 && status === 'playing') {
+      setStatus('gameover');
     }
-  }, [timer, fieldState.stats.checked, fieldState.stats.flags, isStarted]);
+  }, [seconds, status]);
+
+  function checkGameStatus() {
+    if (status === 'ready') {
+      setStatus('playing');
+      timer.start();
+    }
+  }
 
   function applyBlockEffects(checkedBlocks: BlockState[]) {
     checkedBlocks.forEach(({ mine, position }) => {
@@ -69,14 +77,33 @@ function Game() {
 
   function checkBlock(p: Position) {
     const [newState, ...checkedBlocks] = fieldState.checkBlock(p);
+    checkGameStatus();
     applyBlockEffects(checkedBlocks);
     setFieldState(newState);
   }
 
   function chordBlock(p: Position) {
     const [newState, ...checkedBlocks] = fieldState.chordBlock(p);
+    checkGameStatus();
     applyBlockEffects(checkedBlocks);
     setFieldState(newState);
+  }
+
+  function toggleFlag(p: Position) {
+    const block = fieldState.getBlock(p);
+
+    checkGameStatus();
+
+    if (!block?.checked) {
+      setFieldState(fieldState.toggleFlag(p)[0]);
+    }
+  }
+
+  function retry() {
+    setStatus('ready');
+    setFieldState(new FieldState());
+    setOffset(new Position(0, 0));
+    timer.reset();
   }
 
   function handleDualClick(mousePosition: Position) {
@@ -106,11 +133,7 @@ function Game() {
 
   function handleRightClick(mousePosition: Position) {
     const p = toSquarePosition(mousePosition);
-    const block = fieldState.getBlock(p);
-
-    if (!block?.checked) {
-      setFieldState(fieldState.toggleFlag(p)[0]);
-    }
+    toggleFlag(p);
   }
 
   function handleMouseDown(mousePosition: Position) {
@@ -132,7 +155,30 @@ function Game() {
   }
 
   return (
-    <div className="game">
+    <GameContainer
+      isPaused={status === 'gameover'}
+      controller={(
+        <>
+          {status === 'playing' && (
+            <>
+              <Scoreboard
+                time={seconds / MAX_GAME_SECONDS}
+                checked={fieldState.stats.checked}
+                flags={fieldState.stats.flags}
+              />
+              <StartBanner />
+            </>
+          )}
+
+          {status === 'gameover' && (
+            <GameResult
+              stats={fieldState.stats}
+              onRetry={retry}
+            />
+          )}
+        </>
+      )}
+    >
       <MouseControl
         onPan={handlePan}
         onMouseDown={handleMouseDown}
@@ -147,18 +193,7 @@ function Game() {
           {renderSquares}
         </Field>
       </MouseControl>
-
-      {isStarted && (
-        <>
-          <Scoreboard
-            time={seconds / MAX_GAME_SECONDS}
-            checked={fieldState.stats.checked}
-            flags={fieldState.stats.flags}
-          />
-          <StartBanner />
-        </>
-      )}
-    </div>
+    </GameContainer>
   );
 }
 
