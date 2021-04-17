@@ -18,22 +18,32 @@ export function Field({ offset, onRange, children }: FieldProps) {
   const [contentStyle, setContentStyle] = useState({ left: '0px', top: '0px' });
 
   useEffect(() => {
-    const element = containerRef.current;
+    function updateRange() {
+      const element = containerRef.current;
 
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      const newRange = Range.fromRect(offset.x, offset.y, rect.width, rect.height, SQUARE_SIZE);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        const newRange = Range.fromRect(offset.x, offset.y, rect.width, rect.height, SQUARE_SIZE);
 
-      if (!newRange.equals(range.current)) {
-        range.current = newRange;
-        onRange?.(newRange);
+        if (!newRange.equals(range.current)) {
+          range.current = newRange;
+          onRange?.(newRange);
+        }
+
+        setContentStyle({
+          left: `${-offset.x}px`,
+          top: `${-offset.y}px`,
+        });
       }
-
-      setContentStyle({
-        left: `${-offset.x}px`,
-        top: `${-offset.y}px`,
-      });
     }
+
+    updateRange();
+
+    window.addEventListener('resize', updateRange, false);
+
+    return () => {
+      window.removeEventListener('resize', updateRange, false);
+    };
   }, [onRange, containerRef, offset, range]);
 
   return (
