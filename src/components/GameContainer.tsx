@@ -4,18 +4,18 @@ import './GameContainer.css';
 
 export interface GameContainerProps {
   isPaused: boolean;
-  controller?: ReactNode;
+  panel?: ReactNode;
   children: ReactNode;
 }
 
-export function GameContainer({ isPaused, controller, children }: GameContainerProps) {
+export function GameContainer({ isPaused, panel, children }: GameContainerProps) {
   return (
     <div className={cn('game-container', isPaused && 'game-container--paused')}>
       <div className="game-container__field">
         {children}
       </div>
-      <div className="game-container__controller">
-        {controller}
+      <div className="game-container__panel">
+        {panel}
       </div>
     </div>
   );

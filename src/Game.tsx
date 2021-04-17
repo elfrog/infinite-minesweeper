@@ -147,7 +147,7 @@ function Game() {
   return (
     <GameContainer
       isPaused={status === 'gameover'}
-      controller={(
+      panel={(
         <>
           {status === 'playing' && (
             <>
