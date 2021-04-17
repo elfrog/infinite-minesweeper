@@ -19,13 +19,13 @@ export const Default: Story<FieldProps> = (args) => {
 
   return (
     <Field {...args} onRange={handleRange}>
-      {range.map(({ x, y, key }) => (
-        <Square key={key} x={x} y={y} checked={false} />
+      {range.map((position) => (
+        <Square key={position.key} position={position} checked={false} />
       ))}
     </Field>
   );
 };
 
 Default.args = {
-  offset: new Position(0, 0),
+  offset: Position.Zero,
 };

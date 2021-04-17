@@ -36,7 +36,7 @@ export function MouseControl({
   const leftDown = useRef(false);
   const rightDown = useRef(false);
   const longClickTimer = useRef(0);
-  const offset = useRef(new Position(0, 0));
+  const offset = useRef(Position.Zero);
 
   function cancelLongMouseDownTimer() {
     if (longClickTimer.current) {

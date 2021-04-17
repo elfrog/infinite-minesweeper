@@ -17,7 +17,7 @@ const MAX_GAME_SECONDS = 60;
 type GameStatus = 'ready' | 'playing' | 'gameover';
 
 function Game() {
-  const [offset, setOffset] = useState(new Position(0, 0));
+  const [offset, setOffset] = useState(Position.Zero);
   const [fieldState, setFieldState] = useState(new FieldState());
   const [pushedSquares, setPushedSquares] = useState<string[]>([]);
   const [status, setStatus] = useState<GameStatus>('ready');
@@ -82,7 +82,7 @@ function Game() {
   function retry() {
     setStatus('ready');
     setFieldState(new FieldState());
-    setOffset(new Position(0, 0));
+    setOffset(Position.Zero);
     timer.reset();
   }
 
@@ -173,8 +173,7 @@ function Game() {
           {range.map((p) => (
             <Square
               key={p.key}
-              x={p.x}
-              y={p.y}
+              position={p}
               pushed={pushedSquares.includes(p.key)}
               {...fieldState.getBlock(p)}
             />

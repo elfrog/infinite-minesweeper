@@ -9,8 +9,7 @@ export function toSquarePosition({ x, y }: Position) {
 }
 
 export interface SquareProps {
-  x: number;
-  y: number;
+  position?: Position;
   checked?: boolean;
   flag?: boolean;
   itemBox?: boolean;
@@ -20,8 +19,7 @@ export interface SquareProps {
 }
 
 export function Square({
-  x,
-  y,
+  position: { x, y, key } = Position.Zero,
   checked,
   flag,
   itemBox,
@@ -33,7 +31,6 @@ export function Square({
     top: `${SQUARE_SIZE * y}px`,
     left: `${SQUARE_SIZE * x}px`,
   };
-  const { key } = new Position(x, y);
   let content = '';
 
   if (checked) {

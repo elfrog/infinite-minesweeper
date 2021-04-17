@@ -18,6 +18,6 @@ export default {
 
 export const Default: Story<GameContainerProps> = (args) => (
   <GameContainer {...args}>
-    <Field offset={new Position(0, 0)} />
+    <Field offset={Position.Zero} />
   </GameContainer>
 );

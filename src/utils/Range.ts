@@ -1,13 +1,13 @@
 import { Position } from '../game/Position';
 
 export class Range {
-  static Zero = new Range();
+  static Zero = new Range(0, 0, 0, 0);
 
   constructor(
-    public xStart = 0,
-    public yStart = 0,
-    public xEnd = 0,
-    public yEnd = 0,
+    public xStart: number,
+    public yStart: number,
+    public xEnd: number,
+    public yEnd: number,
   ) {
   }
 
