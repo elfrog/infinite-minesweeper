@@ -2,13 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { Position } from './game/Position';
 import { FieldState } from './game/FieldState';
 import { BlockState } from './game/BlockState';
-import { Field, FieldRangeIterator, Range } from './components/Field';
+import { Field } from './components/Field';
 import { Square, toSquarePosition } from './components/Square';
 import { MouseControl } from './components/MouseControl';
 import { Scoreboard } from './components/Scoreboard';
 import { StartBanner } from './components/StartBanner';
 import { GameResult } from './components/GameResult';
 import { GameContainer } from './components/GameContainer';
+import { Range } from './utils/Range';
 import { useTimer } from './utils/useTimer';
 
 const MAX_GAME_SECONDS = 60;
@@ -20,7 +21,7 @@ function Game() {
   const [fieldState, setFieldState] = useState(new FieldState());
   const [pushedSquares, setPushedSquares] = useState<string[]>([]);
   const [status, setStatus] = useState<GameStatus>('ready');
-  const [range, setRange] = useState<Range>();
+  const [range, setRange] = useState<Range>(Range.Zero);
   const [seconds, timer] = useTimer(MAX_GAME_SECONDS);
   const handlePan = useCallback((p: Position) => {
     setOffset(p);
@@ -169,7 +170,7 @@ function Game() {
         onDualClick={handleDualClick}
       >
         <Field offset={offset} onRange={handleRange}>
-          {range && Array.from(FieldRangeIterator(range)).map((p) => (
+          {range.map((p) => (
             <Square
               key={p.key}
               x={p.x}
