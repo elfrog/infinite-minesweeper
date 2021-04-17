@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import cn from 'classnames';
 import { Position } from '../game/Position';
 import './Square.css';
 
@@ -11,23 +11,55 @@ export function toSquarePosition({ x, y }: Position) {
 export interface SquareProps {
   x: number;
   y: number;
-  children?: ReactNode;
+  checked?: boolean;
+  flag?: boolean;
+  itemBox?: boolean;
+  pushed?: boolean;
+  count?: number;
+  mine?: boolean;
 }
 
-export function Square({ x, y, children }: SquareProps) {
+export function Square({
+  x,
+  y,
+  checked,
+  flag,
+  itemBox,
+  pushed,
+  count,
+  mine,
+}: SquareProps) {
   const style = {
     top: `${SQUARE_SIZE * y}px`,
     left: `${SQUARE_SIZE * x}px`,
   };
   const { key } = new Position(x, y);
+  let content = '';
+
+  if (checked) {
+    if (mine) {
+      content = '💣';
+    } else {
+      content = `${count || ''}`;
+    }
+  } else if (flag) {
+    content = '🚩';
+  } else if (itemBox) {
+    content = '⏰';
+  }
 
   return (
     <div
-      className="square"
+      className={cn(
+        'square',
+        `square--count-${count}`,
+        checked && 'square--checked',
+        !checked && pushed && 'square--pushed',
+      )}
       style={style}
       data-position={key}
     >
-      {children}
+      {content}
     </div>
   );
 }

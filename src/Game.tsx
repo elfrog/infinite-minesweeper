@@ -4,8 +4,6 @@ import { FieldState } from './game/FieldState';
 import { BlockState } from './game/BlockState';
 import { Field, FieldRangeIterator, Range } from './components/Field';
 import { Square, toSquarePosition } from './components/Square';
-import { CheckedBlock } from './components/CheckedBlock';
-import { Block } from './components/Block';
 import { MouseControl } from './components/MouseControl';
 import { Scoreboard } from './components/Scoreboard';
 import { StartBanner } from './components/StartBanner';
@@ -30,22 +28,14 @@ function Game() {
     Array.from(FieldRangeIterator(range)).map((p) => {
       const block = fieldState.getBlock(p);
 
-      if (block?.checked) {
-        return (
-          <Square key={p.key} x={p.x} y={p.y}>
-            <CheckedBlock count={block.count} mine={block.mine} />
-          </Square>
-        );
-      }
-
       return (
-        <Square key={p.key} x={p.x} y={p.y}>
-          <Block
-            itemBox={block?.itemBox}
-            flag={block?.flag}
-            pushed={pushedSquares.includes(p.key)}
-          />
-        </Square>
+        <Square
+          key={p.key}
+          x={p.x}
+          y={p.y}
+          pushed={pushedSquares.includes(p.key)}
+          {...block}
+        />
       );
     })
   ), [fieldState, pushedSquares]);
