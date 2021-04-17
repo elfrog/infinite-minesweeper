@@ -5,11 +5,11 @@
     transform-origin: center;
   }
 
-  40% {
+  20% {
     transform: scaleY(1);
   }
 
-  60% {
+  80% {
     transform: scaleY(1);
   }
 
@@ -33,8 +33,7 @@
   font-weight: bold;
   color: white;
   text-shadow: 1px 1px 0 #000;
-  animation: startBannerAnimation 500ms;
-  animation-iteration-count: 2;
+  animation: startBannerAnimation 1000ms;
   animation-fill-mode: both;
   pointer-events: none;
 }

@@ -6,7 +6,7 @@ export interface StartBannerProps {
 export function StartBanner() {
   return (
     <div className="start-banner">
-      <span>Start!</span>
+      <span>START!</span>
     </div>
   );
 }
