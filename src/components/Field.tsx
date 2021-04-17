@@ -5,8 +5,6 @@ import { SQUARE_SIZE } from './Square';
 import { Position } from '../game/Position';
 import './Field.css';
 
-const RANGE_MARGIN = 0;
-
 export interface Range {
   xStart: number;
   yStart: number;
@@ -14,11 +12,10 @@ export interface Range {
   yEnd: number;
 }
 
-export type FieldRangeCallback = (r: Range) => ReactNode;
-
 export interface FieldProps {
   offset: Position;
-  children?: FieldRangeCallback;
+  onRange?: (range: Range) => void;
+  children?: ReactNode;
 }
 
 export function* FieldRangeIterator(r: Range) {
@@ -29,7 +26,7 @@ export function* FieldRangeIterator(r: Range) {
   }
 }
 
-export function Field({ offset, children }: FieldProps) {
+export function Field({ offset, onRange, children }: FieldProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const range = useRef<Range>({
     xStart: 0,
@@ -37,7 +34,6 @@ export function Field({ offset, children }: FieldProps) {
     xEnd: 0,
     yEnd: 0,
   });
-  const [content, setContent] = useState<ReactNode>(null);
   const [contentStyle, setContentStyle] = useState({ left: '0px', top: '0px' });
 
   useEffect(() => {
@@ -45,10 +41,10 @@ export function Field({ offset, children }: FieldProps) {
 
     if (element) {
       const rect = element.getBoundingClientRect();
-      const xStart = Math.floor(offset.x / SQUARE_SIZE) - RANGE_MARGIN;
-      const xEnd = xStart + Math.ceil(rect.width / SQUARE_SIZE) + RANGE_MARGIN;
-      const yStart = Math.floor(offset.y / SQUARE_SIZE) - RANGE_MARGIN;
-      const yEnd = yStart + Math.ceil(rect.height / SQUARE_SIZE) + RANGE_MARGIN;
+      const xStart = Math.floor(offset.x / SQUARE_SIZE);
+      const xEnd = xStart + Math.ceil(rect.width / SQUARE_SIZE);
+      const yStart = Math.floor(offset.y / SQUARE_SIZE);
+      const yEnd = yStart + Math.ceil(rect.height / SQUARE_SIZE);
       const oldRange = range.current;
 
       if (
@@ -61,7 +57,7 @@ export function Field({ offset, children }: FieldProps) {
           xEnd,
           yEnd,
         };
-        setContent(children?.(range.current));
+        onRange?.(range.current);
       }
 
       setContentStyle({
@@ -69,11 +65,7 @@ export function Field({ offset, children }: FieldProps) {
         top: `${-offset.y}px`,
       });
     }
-  }, [children, containerRef, offset, range]);
-
-  useEffect(() => {
-    setContent(children?.(range.current));
-  }, [children, range]);
+  }, [onRange, containerRef, offset, range]);
 
   return (
     <div
@@ -84,7 +76,7 @@ export function Field({ offset, children }: FieldProps) {
         className="field__content"
         style={contentStyle}
       >
-        {content}
+        {children}
       </div>
     </div>
   );

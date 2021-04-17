@@ -20,25 +20,14 @@ function Game() {
   const [fieldState, setFieldState] = useState(new FieldState());
   const [pushedSquares, setPushedSquares] = useState<string[]>([]);
   const [status, setStatus] = useState<GameStatus>('ready');
+  const [range, setRange] = useState<Range>();
   const [seconds, timer] = useTimer(MAX_GAME_SECONDS);
   const handlePan = useCallback((p: Position) => {
     setOffset(p);
   }, []);
-  const renderSquares = useCallback((range: Range) => (
-    Array.from(FieldRangeIterator(range)).map((p) => {
-      const block = fieldState.getBlock(p);
-
-      return (
-        <Square
-          key={p.key}
-          x={p.x}
-          y={p.y}
-          pushed={pushedSquares.includes(p.key)}
-          {...block}
-        />
-      );
-    })
-  ), [fieldState, pushedSquares]);
+  const handleRange = useCallback((newRange: Range) => {
+    setRange(newRange);
+  }, []);
 
   useEffect(() => {
     if (seconds === 0 && status === 'playing') {
@@ -179,8 +168,16 @@ function Game() {
         onLongClick={handleLongClick}
         onDualClick={handleDualClick}
       >
-        <Field offset={offset}>
-          {renderSquares}
+        <Field offset={offset} onRange={handleRange}>
+          {range && Array.from(FieldRangeIterator(range)).map((p) => (
+            <Square
+              key={p.key}
+              x={p.x}
+              y={p.y}
+              pushed={pushedSquares.includes(p.key)}
+              {...fieldState.getBlock(p)}
+            />
+          ))}
         </Field>
       </MouseControl>
     </GameContainer>
