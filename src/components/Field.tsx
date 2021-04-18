@@ -1,9 +1,8 @@
 import {
   ReactNode, useEffect, useRef, useState,
 } from 'react';
-import { SQUARE_SIZE } from './Square';
 import { Position } from '../game/Position';
-import { Range } from '../utils/Range';
+import { Range, useRange } from '../utils/Range';
 import './Field.css';
 
 export interface FieldProps {
@@ -14,37 +13,19 @@ export interface FieldProps {
 
 export function Field({ offset, onRange, children }: FieldProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const range = useRef<Range>(Range.Zero);
+  const range = useRange(containerRef, offset);
   const [contentStyle, setContentStyle] = useState({ left: '0px', top: '0px' });
 
   useEffect(() => {
-    function updateRange() {
-      const element = containerRef.current;
+    onRange?.(range);
+  }, [onRange, range]);
 
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        const newRange = Range.fromRect(offset.x, offset.y, rect.width, rect.height, SQUARE_SIZE);
-
-        if (!newRange.equals(range.current)) {
-          range.current = newRange;
-          onRange?.(newRange);
-        }
-
-        setContentStyle({
-          left: `${-offset.x}px`,
-          top: `${-offset.y}px`,
-        });
-      }
-    }
-
-    updateRange();
-
-    window.addEventListener('resize', updateRange, false);
-
-    return () => {
-      window.removeEventListener('resize', updateRange, false);
-    };
-  }, [onRange, containerRef, offset, range]);
+  useEffect(() => {
+    setContentStyle({
+      left: `${-offset.x}px`,
+      top: `${-offset.y}px`,
+    });
+  }, [offset]);
 
   return (
     <div

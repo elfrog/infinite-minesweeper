@@ -1,3 +1,7 @@
+import {
+  RefObject, useEffect, useRef, useState,
+} from 'react';
+import { SQUARE_SIZE } from '../components/Square';
 import { Position } from '../game/Position';
 
 export class Range {
@@ -29,15 +33,59 @@ export class Range {
     );
   }
 
-  map<T>(callback: (p: Position) => T) {
+  map<T>(callback: (p: Position, i: number) => T) {
     const result: Array<T> = [];
+    let index = 0;
 
     for (let y = this.yStart; y <= this.yEnd; y++) {
       for (let x = this.xStart; x <= this.xEnd; x++) {
-        result.push(callback(new Position(x, y)));
+        result.push(callback(new Position(x, y), index));
+        index++;
       }
     }
 
     return result;
   }
+
+  forEach(callback: (p: Position, i: number) => void) {
+    let index = 0;
+
+    for (let y = this.yStart; y <= this.yEnd; y++) {
+      for (let x = this.xStart; x <= this.xEnd; x++) {
+        callback(new Position(x, y), index);
+        index++;
+      }
+    }
+  }
+}
+
+export function useRange(ref: RefObject<Element>, offset: Position) {
+  const oldRange = useRef<Range>(Range.Zero);
+  const [range, setRange] = useState(Range.Zero);
+
+  useEffect(() => {
+    function updateRange() {
+      const element = ref.current;
+
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        const newRange = Range.fromRect(offset.x, offset.y, rect.width, rect.height, SQUARE_SIZE);
+
+        if (!newRange.equals(oldRange.current)) {
+          oldRange.current = newRange;
+          setRange(newRange);
+        }
+      }
+    }
+
+    updateRange();
+
+    window.addEventListener('resize', updateRange, false);
+
+    return () => {
+      window.removeEventListener('resize', updateRange, false);
+    };
+  }, [ref, offset]);
+
+  return range;
 }
