@@ -20,7 +20,7 @@ export function usePan(callback: PanCallback) {
       const dy = -e.movementY;
 
       if (!panStart) {
-        if (Math.abs(dx) + Math.abs(dy) > 0) {
+        if (Math.abs(dx) + Math.abs(dy) > 1) {
           setIsPanning(true);
           panStart = true;
         }
