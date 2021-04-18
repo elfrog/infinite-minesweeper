@@ -20,25 +20,32 @@ function Game() {
   }, []);
 
   function checkGameStatus() {
-    if (status === 'ready') {
-      setStatus('playing');
+    switch (status) {
+      case 'ready':
+        setStatus('playing');
+        return true;
+      case 'playing':
+        return true;
+      default:
+        return false;
     }
   }
 
   function applyStateResult([newState, ...checkedBlocks]: FieldStateSetResult) {
-    checkGameStatus();
-    setTimeChanges(checkedBlocks.map(({ mine, position }) => {
-      if (mine) {
-        return -TIME_CHANGE_AMOUNT;
-      }
+    if (checkGameStatus()) {
+      setTimeChanges(checkedBlocks.map(({ mine, position }) => {
+        if (mine) {
+          return -TIME_CHANGE_AMOUNT;
+        }
 
-      if (fieldState.getBlock(position)?.itemBox) {
-        return TIME_CHANGE_AMOUNT;
-      }
+        if (fieldState.getBlock(position)?.itemBox) {
+          return TIME_CHANGE_AMOUNT;
+        }
 
-      return 0;
-    }));
-    setFieldState(newState);
+        return 0;
+      }));
+      setFieldState(newState);
+    }
   }
 
   function handleCheck(p: Position) {
