@@ -1,61 +1,72 @@
-import {
-  createContext, useEffect, useRef, useState,
-} from 'react';
+import { useEffect, useRef } from 'react';
 import { SQUARE_SIZE } from './Square';
-import { Range } from '../utils/Range';
+import { Range, useRange } from '../utils/Range';
 import { FieldProps } from './Field';
-import './Field.css';
+import './CanvasField.css';
 
-interface CanvasFieldContextProps {
-  context2d?: CanvasRenderingContext2D;
+export interface CanvasFieldProps extends Omit<FieldProps, 'children'> {
+  children: (range: Range) => HTMLCanvasElement[];
 }
 
-export const CanvasFieldContext = createContext<CanvasFieldContextProps>({
-});
-
-export function CanvasField({ offset, onRange, children }: FieldProps) {
+export function CanvasField({ offset, children }: CanvasFieldProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const range = useRef<Range>(Range.Zero);
-  const [context, setContext] = useState<CanvasFieldContextProps>({});
-
-  useEffect(() => {
-    const element = containerRef.current;
-
-    if (element) {
-      const rect = element.getBoundingClientRect();
-      const newRange = Range.fromRect(offset.x, offset.y, rect.width, rect.height, SQUARE_SIZE);
-
-      if (!newRange.equals(range.current)) {
-        range.current = newRange;
-        onRange?.(newRange);
-      }
-    }
-  }, [onRange, containerRef, offset, range]);
+  const range = useRange(containerRef, offset);
 
   useEffect(() => {
     const canvasElement = canvasRef.current;
+    const containerElement = containerRef.current;
 
-    if (canvasElement) {
-      const ctx = canvasElement.getContext('2d');
-
-      setContext({
-        context2d: ctx || undefined,
-      });
+    if (!canvasElement || !containerElement) {
+      return () => {};
     }
-  }, [canvasRef]);
+
+    const requestId = window.requestAnimationFrame(() => {
+      const ctx = canvasElement.getContext('2d', { alpha: false });
+
+      if (!ctx) {
+        return;
+      }
+
+      const ratio = window.devicePixelRatio;
+      const width = containerElement.clientWidth;
+      const height = containerElement.clientHeight;
+
+      canvasElement.width = width * ratio;
+      canvasElement.height = height * ratio;
+      canvasElement.style.width = `${width}px`;
+      canvasElement.style.height = `${height}px`;
+
+      ctx.scale(ratio, ratio);
+
+      const squares = children?.(range) || [];
+
+      range.forEach((p, i) => {
+        const square = squares[i];
+
+        if (square) {
+          ctx.drawImage(
+            square,
+            p.x * SQUARE_SIZE - offset.x,
+            p.y * SQUARE_SIZE - offset.y,
+            SQUARE_SIZE,
+            SQUARE_SIZE,
+          );
+        }
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(requestId);
+    };
+  }, [offset, range, children]);
 
   return (
     <div
       ref={containerRef}
       className="canvas-field"
     >
-      <canvas
-        ref={canvasRef}
-      />
-      <CanvasFieldContext.Provider value={context}>
-        {children}
-      </CanvasFieldContext.Provider>
+      <canvas ref={canvasRef} />
     </div>
   );
 }

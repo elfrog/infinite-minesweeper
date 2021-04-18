@@ -4,9 +4,12 @@ import { FieldState } from '../game/FieldState';
 import { Field } from '../components/Field';
 import { Square, toSquarePosition } from '../components/Square';
 import { MouseControl } from '../components/MouseControl';
+import { CanvasField } from '../components/CanvasField';
+import { getCanvasSquare } from '../components/CanvasSquare';
 
 export interface GameFieldProps {
   fieldState: FieldState;
+  useCanvas?: boolean;
   onCheck: (p: Position) => void;
   onChord: (p: Position) => void;
   onFlag: (p: Position) => void;
@@ -14,6 +17,7 @@ export interface GameFieldProps {
 
 export default function GameField({
   fieldState,
+  useCanvas = true,
   onCheck,
   onChord,
   onFlag,
@@ -83,15 +87,27 @@ export default function GameField({
       onLongClick={handleLongClick}
       onDualClick={handleDualClick}
     >
-      <Field offset={offset}>
-        {(range) => range.map((p) => (
-          <Square
-            key={p.key}
-            pushed={pushedSquares.includes(p.key)}
-            {...fieldState.getBlock(p)}
-          />
-        ))}
-      </Field>
+      {!useCanvas && (
+        <Field offset={offset}>
+          {(range) => range.map((p) => (
+            <Square
+              key={p.key}
+              pushed={pushedSquares.includes(p.key)}
+              {...fieldState.getBlock(p)}
+            />
+          ))}
+        </Field>
+      )}
+      {useCanvas && (
+        <CanvasField offset={offset}>
+          {(range) => range.map((p) => (
+            getCanvasSquare({
+              pushed: pushedSquares.includes(p.key),
+              ...fieldState.getBlock(p),
+            })
+          ))}
+        </CanvasField>
+      )}
     </MouseControl>
   );
 }
