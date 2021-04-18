@@ -4,7 +4,6 @@ import { FieldState } from '../game/FieldState';
 import { Field } from '../components/Field';
 import { Square, toSquarePosition } from '../components/Square';
 import { MouseControl } from '../components/MouseControl';
-import { Range } from '../utils/Range';
 
 export interface GameFieldProps {
   fieldState: FieldState;
@@ -20,13 +19,9 @@ export default function GameField({
   onFlag,
 }: GameFieldProps) {
   const [offset, setOffset] = useState(Position.Zero);
-  const [range, setRange] = useState<Range>(Range.Zero);
   const [pushedSquares, setPushedSquares] = useState<string[]>([]);
   const handlePan = useCallback((p: Position) => {
     setOffset(p);
-  }, []);
-  const handleRange = useCallback((newRange: Range) => {
-    setRange(newRange);
   }, []);
 
   function handleDualClick(mousePosition: Position) {
@@ -88,11 +83,10 @@ export default function GameField({
       onLongClick={handleLongClick}
       onDualClick={handleDualClick}
     >
-      <Field offset={offset} onRange={handleRange}>
-        {range.map((p) => (
+      <Field offset={offset}>
+        {(range) => range.map((p) => (
           <Square
             key={p.key}
-            position={p}
             pushed={pushedSquares.includes(p.key)}
             {...fieldState.getBlock(p)}
           />

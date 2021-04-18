@@ -1,31 +1,17 @@
-import {
-  ReactNode, useEffect, useRef, useState,
-} from 'react';
+import { ReactNode, useRef } from 'react';
 import { Position } from '../game/Position';
 import { Range, useRange } from '../utils/Range';
 import './Field.css';
+import { SQUARE_SIZE } from './Square';
 
 export interface FieldProps {
   offset: Position;
-  onRange?: (range: Range) => void;
-  children?: ReactNode;
+  children?: (range: Range) => ReactNode;
 }
 
-export function Field({ offset, onRange, children }: FieldProps) {
+export function Field({ offset, children }: FieldProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const range = useRange(containerRef, offset);
-  const [contentStyle, setContentStyle] = useState({ left: '0px', top: '0px' });
-
-  useEffect(() => {
-    onRange?.(range);
-  }, [onRange, range]);
-
-  useEffect(() => {
-    setContentStyle({
-      left: `${-offset.x}px`,
-      top: `${-offset.y}px`,
-    });
-  }, [offset]);
 
   return (
     <div
@@ -34,9 +20,14 @@ export function Field({ offset, onRange, children }: FieldProps) {
     >
       <div
         className="field__content"
-        style={contentStyle}
+        style={{
+          left: `${range.xStart * SQUARE_SIZE - offset.x}px`,
+          top: `${range.yStart * SQUARE_SIZE - offset.y}px`,
+          width: `${(range.xEnd - range.xStart + 1) * SQUARE_SIZE}px`,
+          height: `${(range.yEnd - range.yStart + 1) * SQUARE_SIZE}px`,
+        }}
       >
-        {children}
+        {children?.(range)}
       </div>
     </div>
   );
