@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { SQUARE_SIZE } from './Square';
 import { Range, useRange } from '../utils/Range';
+import { useCanvasContext } from '../utils/useCanvasContext';
 import { FieldProps } from './Field';
 import './CanvasField.css';
 
@@ -11,34 +12,19 @@ export interface CanvasFieldProps extends Omit<FieldProps, 'children'> {
 export function CanvasField({ offset, children }: CanvasFieldProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctx = useCanvasContext(
+    canvasRef,
+    containerRef.current?.clientWidth || 0,
+    containerRef.current?.clientHeight || 0,
+  );
   const range = useRange(containerRef, offset);
 
   useEffect(() => {
-    const canvasElement = canvasRef.current;
-    const containerElement = containerRef.current;
-
-    if (!canvasElement || !containerElement) {
+    if (!ctx) {
       return () => {};
     }
 
     const requestId = window.requestAnimationFrame(() => {
-      const ctx = canvasElement.getContext('2d', { alpha: false });
-
-      if (!ctx) {
-        return;
-      }
-
-      const ratio = window.devicePixelRatio;
-      const width = containerElement.clientWidth;
-      const height = containerElement.clientHeight;
-
-      canvasElement.width = width * ratio;
-      canvasElement.height = height * ratio;
-      canvasElement.style.width = `${width}px`;
-      canvasElement.style.height = `${height}px`;
-
-      ctx.scale(ratio, ratio);
-
       const squares = children?.(range) || [];
 
       range.forEach((p, i) => {
@@ -59,7 +45,7 @@ export function CanvasField({ offset, children }: CanvasFieldProps) {
     return () => {
       window.cancelAnimationFrame(requestId);
     };
-  }, [offset, range, children]);
+  }, [offset, range, children, ctx]);
 
   return (
     <div

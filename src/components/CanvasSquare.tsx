@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useCanvasContext } from '../utils/useCanvasContext';
 import { SquareProps, SQUARE_SIZE } from './Square';
 import Mine from '../assets/bomb.svg';
 import Flag from '../assets/flag.svg';
@@ -133,26 +134,15 @@ export function getCanvasSquare(props: SquareProps) {
 
 export function CanvasSquare(props: SquareProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctx = useCanvasContext(canvasRef, SQUARE_SIZE, SQUARE_SIZE);
 
   useEffect(() => {
-    const canvasElement = canvasRef.current;
-
-    if (canvasElement) {
-      const ratio = window.devicePixelRatio;
-      const ctx = canvasElement.getContext('2d', { alpha: false });
+    if (ctx) {
       const square = getCanvasSquare(props);
 
-      canvasElement.width = SQUARE_SIZE * ratio;
-      canvasElement.height = SQUARE_SIZE * ratio;
-      canvasElement.style.width = `${SQUARE_SIZE}px`;
-      canvasElement.style.height = `${SQUARE_SIZE}px`;
-
-      if (ctx) {
-        ctx.scale(ratio, ratio);
-        ctx.drawImage(square, 0, 0, SQUARE_SIZE, SQUARE_SIZE);
-      }
+      ctx.drawImage(square, 0, 0, SQUARE_SIZE, SQUARE_SIZE);
     }
-  }, [props]);
+  }, [props, ctx]);
 
   return <canvas ref={canvasRef} />;
 }
