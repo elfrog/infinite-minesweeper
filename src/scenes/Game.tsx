@@ -5,10 +5,10 @@ import { GameResult } from '../components/GameResult';
 import { GameContainer } from '../components/GameContainer';
 import GamePlay from './GamePlay';
 import GameField from './GameField';
+import { BRAND } from '../constants';
 
 const MAX_GAME_SECONDS = 60;
 const TIME_CHANGE_AMOUNT = 5;
-const BRAND = 'INFINITE MINESWEEPER';
 
 type GameStatus = 'ready' | 'playing' | 'gameover';
 

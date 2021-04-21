@@ -1,0 +1,34 @@
+
+@keyframes openingFadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.opening {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: darkslategray;
+  animation: openingFadeOut 500ms both;
+  animation-delay: 500ms;
+  overflow: hidden;
+}
+
+.opening--hidden {
+  display: none;
+}
+
+.opening__square {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: slategray;
+}
