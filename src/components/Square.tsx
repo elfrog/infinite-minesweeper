@@ -1,8 +1,7 @@
 import cn from 'classnames';
 import { Position } from '../game/Position';
+import { SQUARE_SIZE } from '../constants';
 import './Square.css';
-
-export const SQUARE_SIZE = 32;
 
 export function toSquarePosition({ x, y }: Position) {
   return new Position(Math.floor(x / SQUARE_SIZE), Math.floor(y / SQUARE_SIZE));
@@ -50,6 +49,10 @@ export function Square({
         !checked && pushed && 'square--pushed',
         !checked && !content && text && 'square--text',
       )}
+      style={{
+        width: `${SQUARE_SIZE}px`,
+        height: `${SQUARE_SIZE}px`,
+      }}
     >
       {content || text}
     </div>

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useCanvasContext } from '../utils/useCanvasContext';
-import { SquareProps, SQUARE_SIZE } from './Square';
+import { SquareProps } from './Square';
+import { SQUARE_SIZE } from '../constants';
 import Mine from '../assets/bomb.svg';
 import Flag from '../assets/flag.svg';
 import Clock from '../assets/clock.svg';

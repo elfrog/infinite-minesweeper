@@ -1,8 +1,8 @@
 import { ReactNode, useRef } from 'react';
 import { Position } from '../game/Position';
 import { Range, useRange } from '../utils/Range';
+import { SQUARE_SIZE } from '../constants';
 import './Field.css';
-import { SQUARE_SIZE } from './Square';
 
 export interface FieldProps {
   offset: Position;

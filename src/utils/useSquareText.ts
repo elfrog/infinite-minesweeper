@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { SQUARE_SIZE } from '../components/Square';
+import { SQUARE_SIZE } from '../constants';
 import { Position } from '../game/Position';
 
 export function getCenteredSquareTextTable(

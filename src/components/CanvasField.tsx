@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { SQUARE_SIZE } from './Square';
+import { SQUARE_SIZE } from '../constants';
 import { Range, useRange } from '../utils/Range';
 import { useCanvasContext } from '../utils/useCanvasContext';
 import { FieldProps } from './Field';

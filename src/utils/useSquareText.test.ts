@@ -1,4 +1,4 @@
-import { SQUARE_SIZE } from '../components/Square';
+import { SQUARE_SIZE } from '../constants';
 import { Position } from '../game/Position';
 import { getCenteredSquareTextTable } from './useSquareText';
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { Position } from '../game/Position';
 import { useSquareText } from '../utils/useSquareText';
-import { SQUARE_SIZE } from './Square';
+import { SQUARE_SIZE } from '../constants';
 import './Opening.css';
 
 const OPENING_ANIMATION_DURATION = 1000;

@@ -1,7 +1,7 @@
 import {
   RefObject, useEffect, useRef, useState,
 } from 'react';
-import { SQUARE_SIZE } from '../components/Square';
+import { SQUARE_SIZE } from '../constants';
 import { Position } from '../game/Position';
 
 export class Range {
