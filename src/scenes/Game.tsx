@@ -8,6 +8,7 @@ import GameField from './GameField';
 
 const MAX_GAME_SECONDS = 60;
 const TIME_CHANGE_AMOUNT = 5;
+const BRAND = 'INFINITE MINESWEEPER';
 
 type GameStatus = 'ready' | 'playing' | 'gameover';
 
@@ -96,6 +97,7 @@ function Game() {
     >
       <GameField
         fieldState={fieldState}
+        squareText={BRAND}
         onCheck={handleCheck}
         onChord={handleChord}
         onFlag={handleFlag}

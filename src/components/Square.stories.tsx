@@ -25,3 +25,6 @@ CheckedCount.args = { checked: true, count: 3 };
 
 export const CheckedMine = Template.bind({});
 CheckedMine.args = { checked: true, mine: true };
+
+export const HasText = Template.bind({});
+HasText.args = { text: 'T' };

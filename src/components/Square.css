@@ -27,6 +27,14 @@
   border-right: 3px solid #d3d3d3;
 }
 
+.square--text:not(.square--checked) {
+  color: #2f4f4f;
+}
+
+.square--text.square--checked {
+  color: #add8e6;
+}
+
 .square--count-1 {
   color: #0000ff;
 }

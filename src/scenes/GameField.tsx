@@ -6,10 +6,12 @@ import { Square, toSquarePosition } from '../components/Square';
 import { MouseControl } from '../components/MouseControl';
 import { CanvasField } from '../components/CanvasField';
 import { getCanvasSquare } from '../components/CanvasSquare';
+import { useSquareText } from '../utils/useSquareText';
 
 export interface GameFieldProps {
   fieldState: FieldState;
   useCanvas?: boolean;
+  squareText: string;
   onCheck: (p: Position) => void;
   onChord: (p: Position) => void;
   onFlag: (p: Position) => void;
@@ -18,10 +20,12 @@ export interface GameFieldProps {
 export default function GameField({
   fieldState,
   useCanvas = true,
+  squareText,
   onCheck,
   onChord,
   onFlag,
 }: GameFieldProps) {
+  const textTable = useSquareText(squareText);
   const [offset, setOffset] = useState(Position.Zero);
   const [pushedSquares, setPushedSquares] = useState<string[]>([]);
   const handlePan = useCallback((p: Position) => {
@@ -93,6 +97,7 @@ export default function GameField({
             <Square
               key={p.key}
               pushed={pushedSquares.includes(p.key)}
+              text={textTable[p.key]}
               {...fieldState.getBlock(p)}
             />
           ))}
@@ -103,6 +108,7 @@ export default function GameField({
           {(range) => range.map((p) => (
             getCanvasSquare({
               pushed: pushedSquares.includes(p.key),
+              text: textTable[p.key],
               ...fieldState.getBlock(p),
             })
           ))}

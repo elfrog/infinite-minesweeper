@@ -38,7 +38,12 @@ function drawSquare(ctx: CanvasRenderingContext2D, {
   count = 0,
   mine,
   pushed,
+  text,
 }: SquareProps) {
+  ctx.font = '16px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
   if (checked) {
     ctx.fillStyle = '#d3d3d3';
     ctx.fillRect(0, 0, SQUARE_SIZE, SQUARE_SIZE);
@@ -59,10 +64,7 @@ function drawSquare(ctx: CanvasRenderingContext2D, {
         ICON_SIZE, ICON_SIZE,
       );
     } else if (count > 0) {
-      ctx.font = '16px monospace';
       ctx.fillStyle = TEXT_COLORS[count] || 'white';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
       ctx.fillText(String(count), SQUARE_SIZE / 2, SQUARE_SIZE / 2);
     }
   } else {
@@ -103,6 +105,9 @@ function drawSquare(ctx: CanvasRenderingContext2D, {
         SQUARE_SIZE / 2 - ICON_SIZE / 2,
         ICON_SIZE, ICON_SIZE,
       );
+    } else if (text) {
+      ctx.fillStyle = '#2f4f4f';
+      ctx.fillText(text, SQUARE_SIZE / 2, SQUARE_SIZE / 2);
     }
   }
 }

@@ -15,6 +15,7 @@ export interface SquareProps {
   pushed?: boolean;
   count?: number;
   mine?: boolean;
+  text?: string;
 }
 
 export function Square({
@@ -24,6 +25,7 @@ export function Square({
   pushed,
   count = 0,
   mine,
+  text,
 }: SquareProps) {
   let content = '';
 
@@ -46,9 +48,10 @@ export function Square({
         `square--count-${count}`,
         checked && 'square--checked',
         !checked && pushed && 'square--pushed',
+        !checked && !content && text && 'square--text',
       )}
     >
-      {content}
+      {content || text}
     </div>
   );
 }
