@@ -1,23 +1,23 @@
-import {
-  RefObject, useEffect, useRef, useState,
-} from 'react';
+import { RefObject, useEffect, useState } from 'react';
 
 export type PanCallback = (dx: number, dy: number) => void;
 
-export function usePan(callback: PanCallback) {
-  const ref = useRef<HTMLDivElement>(null);
+export function usePan(containerRef: RefObject<HTMLElement>, callback: PanCallback) {
   const [isPanning, setIsPanning] = useState(false);
 
   useEffect(() => {
-    const element = ref.current;
+    if (!containerRef.current) {
+      return () => {};
+    }
 
+    const containerElement = containerRef.current;
     let panStart = false;
+    let prevX = 0;
+    let prevY = 0;
 
-    function handleMouseMove(e: MouseEvent) {
-      e.preventDefault();
-
-      const dx = -e.movementX;
-      const dy = -e.movementY;
+    function handlePointerMove(x: number, y: number) {
+      const dx = prevX - x;
+      const dy = prevY - y;
 
       if (!panStart) {
         if (Math.abs(dx) + Math.abs(dy) > 1) {
@@ -29,28 +29,68 @@ export function usePan(callback: PanCallback) {
       if (panStart) {
         callback(dx, dy);
       }
+
+      prevX = x;
+      prevY = y;
     }
 
-    function handleMouseUp() {
-      window.removeEventListener('mousemove', handleMouseMove, false);
-      window.removeEventListener('mouseup', handleMouseUp, false);
+    function handlePointerStart(x: number, y: number) {
+      prevX = x;
+      prevY = y;
+    }
+
+    function handlePointerEnd(e: Event) {
+      e.stopPropagation();
+      e.preventDefault();
       setIsPanning(false);
       panStart = false;
     }
 
-    function handleMouseDown() {
-      window.addEventListener('mousemove', handleMouseMove, false);
-      window.addEventListener('mouseup', handleMouseUp, false);
+    function handleMouseMove(e: MouseEvent) {
+      handlePointerMove(e.clientX, e.clientY);
     }
 
-    element?.addEventListener('mousedown', handleMouseDown, false);
+    function handleMouseUp(e: MouseEvent) {
+      handlePointerEnd(e);
+      window.removeEventListener('mouseup', handleMouseUp, false);
+      window.removeEventListener('mousemove', handleMouseMove, false);
+    }
+
+    function handleMouseDown(e: MouseEvent) {
+      handlePointerStart(e.clientX, e.clientY);
+      window.addEventListener('mouseup', handleMouseUp, false);
+      window.addEventListener('mousemove', handleMouseMove, false);
+    }
+
+    function handleTouchMove(e: TouchEvent) {
+      handlePointerMove(e.touches[0].clientX || 0, e.touches[0].clientY || 0);
+    }
+
+    function handleTouchEnd(e: TouchEvent) {
+      handlePointerEnd(e);
+      window.removeEventListener('touchmove', handleTouchMove, false);
+      window.removeEventListener('touchend', handleTouchEnd, false);
+    }
+
+    function handleTouchStart(e: TouchEvent) {
+      handlePointerStart(e.touches[0].clientX || 0, e.touches[0].clientY || 0);
+      window.addEventListener('touchmove', handleTouchMove, false);
+      window.addEventListener('touchend', handleTouchEnd, false);
+    }
+
+    containerElement.addEventListener('mousedown', handleMouseDown, false);
+    containerElement.addEventListener('touchstart', handleTouchStart, false);
 
     return () => {
-      element?.removeEventListener('mousedown', handleMouseDown, false);
+      containerElement.removeEventListener('mousedown', handleMouseDown, false);
       window.removeEventListener('mousemove', handleMouseMove, false);
       window.removeEventListener('mouseup', handleMouseUp, false);
-    };
-  }, [callback]);
 
-  return [ref, isPanning] as [RefObject<HTMLDivElement>, boolean];
+      containerElement.removeEventListener('touchstart', handleTouchStart, false);
+      window.removeEventListener('touchmove', handleTouchMove, false);
+      window.removeEventListener('touchend', handleTouchEnd, false);
+    };
+  }, [containerRef, callback]);
+
+  return isPanning;
 }

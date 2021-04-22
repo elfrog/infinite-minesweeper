@@ -1,5 +1,5 @@
 import {
-  MouseEvent, ReactNode, useCallback, useRef,
+  MouseEvent, ReactNode, TouchEvent, useCallback, useRef,
 } from 'react';
 import cn from 'classnames';
 import { Position } from '../game/Position';
@@ -33,6 +33,7 @@ export function MouseControl({
   onPanEnd,
   children,
 }: MouseControlProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const leftDown = useRef(false);
   const rightDown = useRef(false);
   const longClickTimer = useRef(0);
@@ -51,11 +52,19 @@ export function MouseControl({
     cancelLongMouseDownTimer();
     onPan?.(newOffset);
   }, [onPan]);
-  const [containerRef, isPanning] = usePan(updateOffset);
+  const isPanning = usePan(containerRef, updateOffset);
 
   function getMousePosition(e: MouseEvent) {
     const left = e.clientX - (containerRef.current?.clientLeft || 0);
     const top = e.clientY - (containerRef.current?.clientTop || 0);
+    return new Position(left + offset.current.x, top + offset.current.y);
+  }
+
+  function getTouchPosition(e: TouchEvent<HTMLDivElement>) {
+    const touchX = e.touches[0]?.clientX || e.changedTouches[0].clientX;
+    const touchY = e.touches[0]?.clientY || e.changedTouches[0].clientY;
+    const left = touchX - (containerRef.current?.clientLeft || 0);
+    const top = touchY - (containerRef.current?.clientTop || 0);
     return new Position(left + offset.current.x, top + offset.current.y);
   }
 
@@ -111,6 +120,35 @@ export function MouseControl({
     cancelLongMouseDownTimer();
   }
 
+  function handleTouchStart(e: TouchEvent<HTMLDivElement>) {
+    const pos = getTouchPosition(e);
+
+    cancelLongMouseDownTimer();
+    onMouseDown?.(pos);
+
+    longClickTimer.current = window.setTimeout(() => {
+      longClickTimer.current = 0;
+      onLongMouseDown?.(pos);
+    }, LONG_CLICK_DURATION);
+  }
+
+  function handleTouchEnd(e: TouchEvent<HTMLDivElement>) {
+    const pos = getTouchPosition(e);
+
+    if (!isPanning) {
+      if (!longClickTimer.current) {
+        onLongClick?.(pos);
+      } else {
+        onClick?.(pos);
+      }
+    } else {
+      onPanEnd?.(offset.current);
+    }
+
+    onMouseUp?.(pos);
+    cancelLongMouseDownTimer();
+  }
+
   function handleContextMenu(e: MouseEvent) {
     e.preventDefault();
   }
@@ -126,6 +164,8 @@ export function MouseControl({
       )}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       onContextMenu={handleContextMenu}
     >
       {children}
