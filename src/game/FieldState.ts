@@ -45,6 +45,10 @@ export class FieldState {
     return this.field.get(key);
   }
 
+  blocks() {
+    return this.field.values();
+  }
+
   toggleFlag(p: Position): FieldStateSetResult {
     const block = this.getBlock(p);
 
