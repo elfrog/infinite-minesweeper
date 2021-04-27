@@ -9,6 +9,7 @@ import { BRAND } from '../constants';
 
 const MAX_GAME_SECONDS = 60;
 const TIME_CHANGE_AMOUNT = 5;
+const USE_CANVAS = new URL(window.location.href).searchParams.get('canvas') !== 'false';
 
 type GameStatus = 'ready' | 'playing' | 'gameover';
 
@@ -98,6 +99,7 @@ function Game() {
       <GameField
         fieldState={fieldState}
         squareText={BRAND}
+        useCanvas={USE_CANVAS}
         onCheck={handleCheck}
         onChord={handleChord}
         onFlag={handleFlag}
