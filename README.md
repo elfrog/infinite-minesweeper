@@ -1,46 +1,39 @@
-# Getting Started with Create React App
+# Infinite Minesweeper
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Infinite Minesweeper is a web-based minesweeper game that has literally infinite mine field.
 
-## Available Scripts
+Unlike other minesweeper games, it limits time while you can extend space infinitely by dragging a screen. Touching mine is not a game-over condition, it just decreases given time.
 
-In the project directory, you can run:
+Technically, this project has some proof of concepts in mind:
 
-### `npm start`
+* OOP(Object Oriented Paradigm) and FP(Functional Paradigm) are not contradicting.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+  You can apply immutability and avoid side effects with OOP, these are not FP-only ideas.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+* With well-designed architecture, Redux-like libraries are not necessary.
 
-### `npm test`
+  IMHO, Redux-like libraries are adding a bloated and complicated layer on project. Take advantage of language's natural features.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  Consider F#, Elem, or Haskell if you fall in love with functions, seriously.
 
-### `npm run build`
+## Project Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+There are three important layers:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. game
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   It contains main game logic that's completely independent of React. It is also possible to combine with other UI frameworks like Vue without any modification.
 
-### `npm run eject`
+2. components
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+   Components in `components` directory are atoms to organisms in terms of [Atomic Design][atomic_design]. These are independent, standalone components, so you can see individual stories on Storybook.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. scenes
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+   Components in `scenes` directory assemble `components` together, and inject game state to them. It's the only place combining game state directly.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## License
 
-## Learn More
+Licensed under the [MIT](LICENSE) license.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+[atomic_design]: https://atomicdesign.bradfrost.com/chapter-2
