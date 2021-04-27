@@ -69,6 +69,10 @@ export function MouseControl({
   }
 
   function handleMouseDown(e: MouseEvent) {
+    // prevent drag selection
+    e.preventDefault();
+    e.stopPropagation();
+
     const pos = getMousePosition(e);
 
     cancelLongMouseDownTimer();
