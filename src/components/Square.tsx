@@ -38,6 +38,8 @@ export function Square({
     content = '🚩';
   } else if (itemBox) {
     content = '⏰';
+  } else if (text) {
+    content = text;
   }
 
   return (
@@ -47,14 +49,14 @@ export function Square({
         `square--count-${count}`,
         checked && 'square--checked',
         !checked && pushed && 'square--pushed',
-        !checked && !content && text && 'square--text',
+        !checked && text && 'square--text',
       )}
       style={{
         width: `${SQUARE_SIZE}px`,
         height: `${SQUARE_SIZE}px`,
       }}
     >
-      {content || text}
+      {content}
     </div>
   );
 }
