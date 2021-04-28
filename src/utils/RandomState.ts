@@ -3,7 +3,7 @@ export type RandomStateGenerator<T> = {
 };
 
 export class RandomState<T> {
-  public value: T;
+  public readonly value: T;
   private nextSeed: number;
   private savedNext?: RandomState<T>;
 

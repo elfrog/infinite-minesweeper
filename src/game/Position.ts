@@ -4,8 +4,8 @@ export class Position {
   static Zero = new Position(0, 0);
 
   constructor(
-    public x: number,
-    public y: number,
+    public readonly x: number,
+    public readonly y: number,
   ) {
   }
 

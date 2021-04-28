@@ -2,11 +2,11 @@ import { BlockState } from './BlockState';
 
 export class Stats {
   constructor(
-    public mines = 0,
-    public checked = 0,
-    public flags = 0,
-    public correctFlags = 0,
-    public clicks = 0,
+    public readonly mines = 0,
+    public readonly checked = 0,
+    public readonly flags = 0,
+    public readonly correctFlags = 0,
+    public readonly clicks = 0,
   ) {
   }
 

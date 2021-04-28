@@ -1,10 +1,10 @@
 import { Position } from './Position';
 
 export interface BlockState {
-  position: Position;
-  count: number;
-  checked: boolean;
-  flag: boolean;
-  mine: boolean;
-  itemBox: boolean;
+  readonly position: Position;
+  readonly count: number;
+  readonly checked: boolean;
+  readonly flag: boolean;
+  readonly mine: boolean;
+  readonly itemBox: boolean;
 }
