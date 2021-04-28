@@ -2,19 +2,21 @@
 
 Infinite Minesweeper is a web-based minesweeper game that has literally infinite mine field.
 
-Unlike other minesweeper games, it limits time while you can extend space infinitely by dragging a screen. Touching mine is not a game-over condition, it just decreases given time.
+Unlike other minesweeper games, it limits time while you can extend space infinitely by dragging field. Touching mine is not a game-over condition, it just decreases given time.
 
-Technically, this project has some proof of concepts in mind:
+## Development Story
 
-* OOP(Object Oriented Paradigm) and FP(Functional Paradigm) are not contradicting.
+Technically, this project has some proof of concept in mind:
 
-  You can apply immutability and avoid side effects with OOP, these are not FP-only ideas.
+> Good fusion of OOP(Object Oriented Paradigm) and FP(Functional Paradigm) ideas.
 
-* With well-designed architecture, Redux-like libraries are not necessary.
+I wished every states used in this project to minimize side effects and utilize OOP features so that I can make well-structured, concentrated state objects.
 
-  IMHO, Redux-like libraries are adding a bloated and complicated layer on project. Take advantage of language's natural features.
+You can see, every state objects, e.g. FieldState, assign its internal variables only once at the constructor. It's like the pure functions only accept its inputs from parameters.
 
-  Consider F#, Elem, or Haskell if you fall in love with functions, seriously.
+With that class concept, I intended to adapt OOP's structuring power. Methods in a state class are related exactly with that state. No need for nested functions to mimic capsulation, just take advantage of language's natural features.
+
+Every states are set only at `Game` component. Since states are immutable, it was easy to apply states on React components. A state change yields new state, and just `setState`!
 
 ## Project Structure
 
