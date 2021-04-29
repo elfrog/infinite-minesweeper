@@ -14,7 +14,7 @@ const USE_CANVAS = new URL(window.location.href).searchParams.get('canvas') !== 
 type GameStatus = 'ready' | 'playing' | 'gameover';
 
 function Game() {
-  const [fieldState, setFieldState] = useState(new FieldState());
+  const [fieldState, setFieldState] = useState(() => new FieldState());
   const [status, setStatus] = useState<GameStatus>('ready');
   const [timeChanges, setTimeChanges] = useState<number[]>([]);
   const handleTimeOver = useCallback(() => {
