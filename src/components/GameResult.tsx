@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import GitHubButton from 'react-github-btn';
 import { MemoizedScore } from './Score';
 import { Stats } from '../game/Stats';
 import './GameResult.css';
@@ -55,6 +56,15 @@ export function GameResult({ stats, onRetry }: GameResultProps) {
             RETRY
           </button>
         )}
+
+        <div>
+          <GitHubButton
+            href="https://github.com/elfrog/infinite-minesweeper"
+            aria-label="Star elfrog/infinite-minesweeper on GitHub"
+          >
+            Star
+          </GitHubButton>
+        </div>
       </div>
     </div>
   );
