@@ -31,13 +31,9 @@ export function getCenteredSquareTextTable(
   return textTable;
 }
 
-export function useSquareText(
-  text: string,
-  width = window.innerWidth,
-  height = window.innerHeight,
-) {
+export function useSquareText(text: string) {
   return useMemo(
-    () => getCenteredSquareTextTable(text, width, height),
-    [text, width, height],
+    () => getCenteredSquareTextTable(text, window.innerWidth, window.innerHeight),
+    [text],
   );
 }
