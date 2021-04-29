@@ -2,6 +2,7 @@
   "name": "infinite-minesweeper",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "author": {
     "name": "Baek Jonghyeon"
   },
