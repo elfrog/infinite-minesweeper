@@ -1,8 +1,22 @@
 # Infinite Minesweeper
 
+<img width="256" alt="infinite-minesweeper-screenshot" src="https://user-images.githubusercontent.com/11677458/116567411-8e950a80-a942-11eb-8aee-08469ccc7665.png">
+
 Infinite Minesweeper is a web-based minesweeper game that has literally infinite mine field.
 
 Unlike other minesweeper games, it limits time while you can extend space infinitely by dragging field. Touching mine is not a game-over condition, it just decreases given time.
+
+## Play
+
+You can play it here:
+
+https://elfrog.github.io/infinite-minesweeper
+
+Non-Canvas version is also available:
+
+https://elfrog.github.io/infinite-minesweeper?canvas=false
+
+> Non-Canvas version uses DOM elements for drawing squares and can drop rendering performance. But it would be fun observing differences.
 
 ## Development Story
 
