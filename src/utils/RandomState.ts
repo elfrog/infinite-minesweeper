@@ -15,10 +15,10 @@ export class RandomState<T> {
     const v: Partial<T> = {};
     let nextSeed = seed;
 
-    Object.keys(this.randomObject).forEach((key) => {
+    Object.getOwnPropertyNames(randomObject).forEach((key) => {
       const objectKey = key as keyof T;
       const value = (nextSeed % 1000) / 1000;
-      v[objectKey] = this.randomObject[objectKey](value, this.depth);
+      v[objectKey] = this.randomObject[objectKey](value, depth);
       nextSeed = (this.seed * 16807) % 2147483647;
     });
 

@@ -1,8 +1,9 @@
 import { Map } from 'immutable';
 import { BlockState } from './BlockState';
 import { Position } from './Position';
-import { BlockRandomState } from './BlockRandomState';
 import { Stats } from './Stats';
+import { BlockRandomStateGenerator } from './BlockRandomState';
+import { RandomState } from '../utils/RandomState';
 
 const ADJACENTS: Position[] = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]
   .map(([x, y]) => new Position(x, y));
@@ -11,7 +12,7 @@ export type FieldStateSetResult = [FieldState, ...BlockState[]];
 
 export class FieldState {
   constructor(
-    private random = new BlockRandomState(),
+    private random = new RandomState(BlockRandomStateGenerator, new Date().getTime()),
     private field = Map<string, BlockState>(),
     public readonly stats = new Stats(),
   ) {
